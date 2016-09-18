@@ -1,7 +1,5 @@
 <?php namespace Laravelista\Sherlock;
 
-use Illuminate\Support\Collection;
-
 class Sherlock
 {
     /**
@@ -60,11 +58,11 @@ class Sherlock
     /**
      * Gets deducted data about content.
      *
-     * @return Collection
+     * @return array
      */
-    public function getLibrary()
+    public function getLibrary(): array
     {
-        return $this->library;
+        return $this->library->toArray();
     }
 
     /**
@@ -142,14 +140,17 @@ class Sherlock
     protected function isChapter(string $line): bool
     {
         // Not a chapter for sure.
-        if ($line[0] !== '#') {
+        if (strlen($line) > 0 and $line[0] !== '#') {
+            return false;
+        }
+
+        if (strlen($line) < 3) {
             return false;
         }
 
         // TODO: Needs more checks here.
 
         return true;
-
     }
 
     /**
