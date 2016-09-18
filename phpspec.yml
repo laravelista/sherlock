@@ -1,0 +1,4 @@
+suites:
+    acme_suite:
+        namespace: Laravelista\Sherlock
+        psr4_prefix: Laravelista\Sherlock

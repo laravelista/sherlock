@@ -1,15 +1,40 @@
 <?php namespace Laravelista\Sherlock;
 
+use Illuminate\Support\Collection;
+
 class Sherlock
 {
+    /**
+     * Contains deducted data about content.
+     *
+     * @var array
+     */
     protected $library = [];
+
+    /**
+     * Contains content that was deducted.
+     *
+     * @var null
+     */
     protected $content = null;
 
+    /**
+     * Nothing spectacular,
+     * collects empty array into collection.
+     *
+     */
     public function __construct()
     {
         $this->library = collect($this->library);
     }
 
+    /**
+     * Scans given string line by line
+     * and remembers chapters.
+     *
+     * @param  string $content
+     * @return [type]
+     */
     public function deduct(string $content)
     {
         $this->content = $content;
@@ -32,15 +57,30 @@ class Sherlock
         return $this;
     }
 
+    /**
+     * Gets deducted data about content.
+     *
+     * @return Collection
+     */
     public function getLibrary()
     {
         return $this->library;
     }
 
-    public function get(string $name = null): string
+    /**
+     * Returns markdown for requested chapter/s.
+     *
+     * @param  string|array|null $name
+     * @return string
+     */
+    public function get($name = null): string
     {
         if (is_null($name)) {
             return $this->getContent();
+        }
+
+        if (is_array($name)) {
+            // TODO: Glue requested chapters together and return
         }
 
         $chapter = $this->library->where('name', $name)->first();
@@ -48,6 +88,14 @@ class Sherlock
         return $this->getContent($chapter['starts_at'], $chapter['ends_at']);
     }
 
+    /**
+     * Returns markdown content from given line to given line
+     * or returns all content.
+     *
+     * @param  int|null $starts_at
+     * @param  int|null $ends_at
+     * @return string
+     */
     public function getContent(int $starts_at = null, int $ends_at = null): string
     {
         if (is_null($starts_at)) {
@@ -64,6 +112,13 @@ class Sherlock
         return implode(PHP_EOL, $content);
     }
 
+    /**
+     * It determines line number where chapter ends at.
+     * Give it a line number on which the chapter starts at.
+     *
+     * @param  int $line_number
+     * @return int
+     */
     protected function determineLineNumberWhereChapterEndsAt(int $line_number): int
     {
         $lines = explode(PHP_EOL, $this->content);
@@ -77,6 +132,13 @@ class Sherlock
         return count($lines) - 1;
     }
 
+    /**
+     * Returns boolean if the given line is
+     * a chapter/header.
+     *
+     * @param  string $line
+     * @return boolean
+     */
     protected function isChapter(string $line): bool
     {
         // Not a chapter for sure.
@@ -84,10 +146,18 @@ class Sherlock
             return false;
         }
 
+        // TODO: Needs more checks here.
+
         return true;
 
     }
 
+    /**
+     * Gets chapter name.
+     *
+     * @param  string $line
+     * @return string
+     */
     protected function determineChapterName(string $line): string
     {
         $parts = explode('# ', $line);
@@ -95,6 +165,12 @@ class Sherlock
         return trim($parts[1]);
     }
 
+    /**
+     * Gets chapter level.
+     *
+     * @param  string $line
+     * @return int
+     */
     protected function determineChapterLevel(string $line): int
     {
         $counter = 0;
