@@ -1,0 +1,25 @@
+{
+  "name": "laravelista/sherlock",
+  "description": "Deduct a markdown document and get specific chapters and/or a table of content.",
+  "keywords": ["markdown", "toc", "chapter", "laravel"],
+  "license": "MIT",
+  "support": {
+    "issues": "https://github.com/laravelista/sherlock/issues",
+    "source": "https://github.com/laravelista/sherlock"
+  },
+  "authors": [
+    {
+      "name": "Mario Bašić",
+      "email": "mario.basic@outlook.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0",
+    "illuminate/support": "~4.0|~5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Laravelista\\Sherlock\\": "src/"
+    }
+  }
+}
