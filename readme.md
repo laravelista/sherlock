@@ -18,4 +18,4 @@ $sherlock->deduct($markdown)->get('Introduction');
 
 ## License
 
-Kyle is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT)
+Sherlock is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT)
