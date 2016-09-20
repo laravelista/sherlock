@@ -2,9 +2,8 @@
 
 namespace spec\Laravelista\Sherlock;
 
-use PhpSpec\ObjectBehavior;
-use Illuminate\Support\Collection;
 use Laravelista\Sherlock\Sherlock;
+use PhpSpec\ObjectBehavior;
 
 class SherlockSpec extends ObjectBehavior
 {
@@ -32,32 +31,7 @@ class SherlockSpec extends ObjectBehavior
 
     public function it_gets_library()
     {
-        $data = [
-            [
-                'level' => 1,
-                'name' => 'This is the document title',
-                'starts_at' => 0,
-                'ends_at' => 3
-            ],
-            [
-                'level' => 2,
-                'name' => 'Introduction',
-                'starts_at' => 4,
-                'ends_at' => 7
-            ],
-            [
-                'level' => 2,
-                'name' => 'Plot',
-                'starts_at' => 8,
-                'ends_at' => 11
-            ],
-            [
-                'level' => 2,
-                'name' => 'Conclusion',
-                'starts_at' => 12,
-                'ends_at' => 14
-            ],
-        ];
+        $data = include __DIR__ . '/../sample/library.php';
 
         $this->deduct($this->markdown)
             ->getLibrary()
@@ -67,12 +41,19 @@ class SherlockSpec extends ObjectBehavior
     public function it_gets_introduction()
     {
         $response =
-        "## Introduction".PHP_EOL.
-        PHP_EOL.
-        "In this chapter I am introducing you to this document and its actors.".PHP_EOL;
+            "## Introduction" . PHP_EOL .
+            PHP_EOL .
+            "In this chapter I am introducing you to this document and its actors." . PHP_EOL;
 
         $this->deduct($this->markdown)
             ->get('Introduction')
             ->shouldReturn($response);
+    }
+
+    public function it_gets_toc()
+    {
+        $this->deduct($this->markdown)
+            ->getToc()
+            ->shouldReturn('<ul><li><a href="#this-is-the-document-title">This is the document title</a></li><li><ul><li><a href="#introduction">Introduction</a></li><li><ul><li><a href="#another-introduction">Another introduction</a></li></ul><li><a href="#plot">Plot</a></li><li><a href="#conclusion">Conclusion</a></li></ul></li></ul>');
     }
 }

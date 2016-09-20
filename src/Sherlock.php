@@ -35,6 +35,9 @@ class Sherlock
      */
     public function deduct(string $content)
     {
+        // clear library
+        $this->library = collect([]);
+        // save content
         $this->content = $content;
 
         $lines = explode(PHP_EOL, $content);
@@ -43,16 +46,54 @@ class Sherlock
         foreach ($lines as $line) {
             $line_number++;
             if ($this->isChapter($line)) {
+                $name = $this->deductChapterName($line);
                 $this->library->push([
-                    'level' => $this->determineChapterLevel($line),
-                    'name' => $this->determineChapterName($line),
+                    'level' => $this->deductChapterLevel($line),
+                    'name' => $name,
                     'starts_at' => $line_number - 1,
-                    'ends_at' => $this->determineLineNumberWhereChapterEndsAt($line_number),
+                    'ends_at' => $this->deductLineNumberWhereChapterEndsAt($line_number),
+                    'slug' => $this->createSlug($name),
                 ]);
             }
         }
 
         return $this;
+    }
+
+    /**
+     * Returns table of content in html format.
+     *
+     * @return string
+     */
+    public function getToc()
+    {
+        $loader = new \Twig_Loader_Filesystem(__DIR__ . '/templates');
+        $twig = new \Twig_Environment($loader);
+
+        return $twig->render('toc.php', ['library' => $this->library]);
+    }
+
+    /**
+     * Turns "Čista velika" to "cista-velika".
+     *
+     * @param  string $text
+     * @return string
+     */
+    protected function createSlug(string $text): string
+    {
+        // Replace croatian characters with normal
+        $patterns = ['/č/', '/ć/', '/š/', '/đ/', '/ž/', '/Č/', '/Ć/', '/Š/', '/Đ/', '/Ž/'];
+        $replacements = ['c', 'c', 's', 'd', 'z', 'c', 'c', 's', 'd', 'z'];
+        $slug = preg_replace($patterns, $replacements, $text);
+        // Replace everything except letters, numbers, white space or a dash with empty space
+        $slug = trim(preg_replace("/[^a-zA-Z0-9\s-]/", "", $slug));
+        // Replace whitespace and a dash with white space and trim the result
+        $slug = trim(preg_replace("/[\s-]+/", " ", $slug));
+        // Replace whitespace with a dash
+        $slug = preg_replace("/\s/", "-", $slug);
+        // Convert text to lowercase
+        $slug = strtolower($slug);
+        return $slug;
     }
 
     /**
@@ -66,21 +107,13 @@ class Sherlock
     }
 
     /**
-     * Returns markdown for requested chapter/s.
+     * Returns markdown for requested chapter.
      *
-     * @param  string|array|null $name
+     * @param  string $name
      * @return string
      */
-    public function get($name = null): string
+    public function get(string $name): string
     {
-        if (is_null($name)) {
-            return $this->getContent();
-        }
-
-        if (is_array($name)) {
-            // TODO: Glue requested chapters together and return
-        }
-
         $chapter = $this->library->where('name', $name)->first();
 
         return $this->getContent($chapter['starts_at'], $chapter['ends_at']);
@@ -90,16 +123,12 @@ class Sherlock
      * Returns markdown content from given line to given line
      * or returns all content.
      *
-     * @param  int|null $starts_at
-     * @param  int|null $ends_at
+     * @param  int $starts_at
+     * @param  int $ends_at
      * @return string
      */
-    public function getContent(int $starts_at = null, int $ends_at = null): string
+    protected function getContent(int $starts_at, int $ends_at): string
     {
-        if (is_null($starts_at)) {
-            return $this->content;
-        }
-
         $lines = explode(PHP_EOL, $this->content);
 
         $content = [];
@@ -108,26 +137,6 @@ class Sherlock
         }
 
         return implode(PHP_EOL, $content);
-    }
-
-    /**
-     * It determines line number where chapter ends at.
-     * Give it a line number on which the chapter starts at.
-     *
-     * @param  int $line_number
-     * @return int
-     */
-    protected function determineLineNumberWhereChapterEndsAt(int $line_number): int
-    {
-        $lines = explode(PHP_EOL, $this->content);
-
-        for ($i = $line_number; $i < count($lines); $i++) {
-            if ($this->isChapter($lines[$i])) {
-                return $i - 1;
-            }
-        }
-
-        return count($lines) - 1;
     }
 
     /**
@@ -154,12 +163,32 @@ class Sherlock
     }
 
     /**
+     * It deducts line number where chapter ends at.
+     * Give it a line number on which the chapter starts at.
+     *
+     * @param  int $line_number
+     * @return int
+     */
+    protected function deductLineNumberWhereChapterEndsAt(int $line_number): int
+    {
+        $lines = explode(PHP_EOL, $this->content);
+
+        for ($i = $line_number; $i < count($lines); $i++) {
+            if ($this->isChapter($lines[$i])) {
+                return $i - 1;
+            }
+        }
+
+        return count($lines) - 1;
+    }
+
+    /**
      * Gets chapter name.
      *
      * @param  string $line
      * @return string
      */
-    protected function determineChapterName(string $line): string
+    protected function deductChapterName(string $line): string
     {
         $parts = explode('# ', $line);
 
@@ -172,7 +201,7 @@ class Sherlock
      * @param  string $line
      * @return int
      */
-    protected function determineChapterLevel(string $line): int
+    protected function deductChapterLevel(string $line): int
     {
         $counter = 0;
 

@@ -8,13 +8,19 @@ Deduct a markdown document and get specific chapters and/or a table of content.
 It's simple as:
 
 ```
+$sherlock = new Sherlock;
+
 $sherlock->deduct($markdown)->get('Introduction');
+
+// or
+
+$sherlock->deduct($markdown)->getToc();
 ```
 
 ## Features
 
-- get specific chapters from given markdown
-- get a table of content from given markdown
+- get a specific chapter
+- get a table of content
 
 ## Installation
 
