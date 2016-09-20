@@ -1,6 +1,6 @@
 {
   "name": "laravelista/sherlock",
-  "description": "Deduct a markdown document and get specific chapters and/or a table of content.",
+  "description": "Deduct a markdown document and get a specific chapter and/or a table of content.",
   "keywords": ["markdown", "toc", "chapter", "laravel"],
   "license": "MIT",
   "support": {
