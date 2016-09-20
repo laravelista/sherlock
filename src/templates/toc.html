@@ -2,7 +2,7 @@
 {% set currentLevel = 1 %}
 {% for chapter in library %}
     {% if loop.first %}
-        <ul><li><a href="#{{ chapter.slug }}">{{ chapter.name }}</a>
+        <ul class="sherlock-toc"><li><a href="#{{ chapter.slug }}">{{ chapter.name }}</a>
     {% elseif chapter.level == library[loop.index0 -1]['level']  %}
         </li><li><a href="#{{ chapter.slug }}">{{ chapter.name }}</a>
     {% elseif chapter.level > library[loop.index0 -1]['level']  %}
