@@ -70,7 +70,7 @@ class Sherlock
         $loader = new \Twig_Loader_Filesystem(__DIR__ . '/templates');
         $twig = new \Twig_Environment($loader);
 
-        return $twig->render('toc.php', ['library' => $this->library]);
+        return $twig->render('toc.html', ['library' => $this->library]);
     }
 
     /**
