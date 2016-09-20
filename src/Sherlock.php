@@ -148,18 +148,11 @@ class Sherlock
      */
     protected function isChapter(string $line): bool
     {
-        // Not a chapter for sure.
-        if (strlen($line) > 0 and $line[0] !== '#') {
-            return false;
+        if(preg_match('/(#+)(\s)(.+)\w+/', $line)) {
+           return true;
         }
 
-        if (strlen($line) < 3) {
-            return false;
-        }
-
-        // TODO: Needs more checks here.
-
-        return true;
+        return false;
     }
 
     /**
