@@ -148,7 +148,7 @@ class Sherlock
      */
     protected function isChapter(string $line): bool
     {
-        if(preg_match('/(#+)(\s)(.+)\w+/', $line)) {
+        if(preg_match('/^(#+)(\s)(.+)\w+/', $line)) {
            return true;
         }
 
