@@ -1,5 +1,5 @@
 {% spaceless %}
-{% set currentLevel = 1 %}
+{% set currentLevel = library[0].level %}
 {% for chapter in library %}
     {% if loop.first %}
         <ul class="sherlock-toc"><li><a href="#{{ chapter.slug }}">{{ chapter.name }}</a>
