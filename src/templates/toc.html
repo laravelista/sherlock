@@ -6,11 +6,17 @@
     {% elseif chapter.level == library[loop.index0 -1]['level']  %}
         </li><li><a href="#{{ chapter.slug }}">{{ chapter.name }}</a>
     {% elseif chapter.level > library[loop.index0 -1]['level']  %}
-        {% set currentLevel = currentLevel + 1 %}
-        <ul><li><a href="#{{ chapter.slug }}">{{ chapter.name }}</a>
+        {% for i in range(1, chapter.level - currentLevel) %}
+            <ul><li>
+        {% endfor %}
+        {% set currentLevel = currentLevel + (chapter.level - currentLevel) %}
+        <a href="#{{ chapter.slug }}">{{ chapter.name }}</a>
     {% elseif chapter.level < library[loop.index0 -1]['level']  %}
-        {% set currentLevel = currentLevel - 1 %}
-        </li></ul></li><li><a href="#{{ chapter.slug }}">{{ chapter.name }}</a>
+        {% for i in range(1, currentLevel - chapter.level) %}
+            </li></ul>
+        {% endfor %}
+        {% set currentLevel = currentLevel - (currentLevel - chapter.level) %}
+        </li><li><a href="#{{ chapter.slug }}">{{ chapter.name }}</a>
     {% endif %}
     {% if loop.last %}
         {% for i in range(1, currentLevel) %}

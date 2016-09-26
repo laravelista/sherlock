@@ -56,6 +56,6 @@ class SherlockSpec extends ObjectBehavior
             ->getToc()->getWrappedObject());*/
         $this->deduct($this->markdown)
             ->getToc()
-            ->shouldReturn('<ul class="sherlock-toc"><li><a href="#this-is-the-document-title">This is the document title</a><ul><li><a href="#introduction">Introduction</a><ul><li><a href="#another-introduction">Another introduction</a></li></ul></li><li><a href="#plot">Plot</a></li><li><a href="#conclusion">Conclusion</a></li></ul></li></ul>');
+            ->shouldReturn('<ul class="sherlock-toc"><li><a href="#this-is-the-document-title">This is the document title</a><ul><li><a href="#introduction">Introduction</a><ul><li><a href="#another-introduction">Another introduction</a><ul><li><a href="#deep-introduction">Deep introduction</a></li></ul></li></ul></li><li><a href="#plot">Plot</a></li><li><a href="#conclusion">Conclusion</a></li></ul></li></ul>');
     }
 }
