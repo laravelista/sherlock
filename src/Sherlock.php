@@ -43,9 +43,34 @@ class Sherlock
         $lines = explode(PHP_EOL, $content);
 
         $line_number = 0;
+        $inside_code_block = false;
         foreach ($lines as $line) {
             $line_number++;
-            if ($this->isChapter($line)) {
+
+            /**
+             * We are already inside acode block, and we detect that
+             * the current line is a code block symbol. That means that we have
+             * reached the end of the current code block. Skip executing the rest
+             * of this loop iteration.
+             */
+            if($inside_code_block and $this->isCodeBlock($line))
+            {
+                $inside_code_block = false;
+                continue;
+            }
+
+            /**
+             * If the current line is a code block symbol, we assume that we
+             * have entered a code block. Skip executing the rest
+             * of this loop iteration.
+             */
+            if($this->isCodeBlock($line))
+            {
+                $inside_code_block = true;
+                continue;
+            }
+
+            if ($this->isChapter($line) and !$inside_code_block) {
                 $name = $this->deductChapterName($line);
                 $this->library->push([
                     'level' => $this->deductChapterLevel($line),
@@ -144,12 +169,27 @@ class Sherlock
      * a chapter/header.
      *
      * @param  string $line
-     * @return boolean
+     * @return bool
      */
     protected function isChapter(string $line): bool
     {
         if(preg_match('/^(#+)(\s)(.+)\w+/', $line)) {
            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns boolean if the given line is a code block symbol.
+     *
+     * @param  string $line
+     * @return bool
+     */
+    protected function isCodeBlock(string $line): bool
+    {
+        if(substr($line, 0, 3) === "```") {
+            return true;
         }
 
         return false;
@@ -166,8 +206,22 @@ class Sherlock
     {
         $lines = explode(PHP_EOL, $this->content);
 
+        $inside_code_block = false;
         for ($i = $line_number; $i < count($lines); $i++) {
-            if ($this->isChapter($lines[$i])) {
+
+            if($inside_code_block and $this->isCodeBlock($lines[$i]))
+            {
+                $inside_code_block = false;
+                continue;
+            }
+
+            if($this->isCodeBlock($lines[$i]))
+            {
+                $inside_code_block = true;
+                continue;
+            }
+
+            if (!$inside_code_block and $this->isChapter($lines[$i])) {
                 return $i - 1;
             }
         }

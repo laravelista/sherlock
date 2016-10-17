@@ -26,21 +26,21 @@ return [
         'level' => 4,
         'name' => 'Deep introduction',
         'starts_at' => 12,
-        'ends_at' => 15,
+        'ends_at' => 19,
         'slug' => 'deep-introduction'
     ],
     [
         'level' => 2,
         'name' => 'Plot',
-        'starts_at' => 16,
-        'ends_at' => 19,
+        'starts_at' => 20,
+        'ends_at' => 23,
         'slug' => 'plot'
     ],
     [
         'level' => 2,
         'name' => 'Conclusion',
-        'starts_at' => 20,
-        'ends_at' => 23,
+        'starts_at' => 24,
+        'ends_at' => 27,
         'slug' => 'conclusion'
     ],
 ];

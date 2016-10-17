@@ -14,6 +14,10 @@ This is some text
 
 This is some text.
 
+```bash
+# This is a comment, not a chapter.
+```
+
 ## Plot
 
 This is where things get complicated.
