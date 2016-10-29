@@ -141,6 +141,8 @@ class Sherlock
     {
         $chapter = $this->library->where('name', $name)->first();
 
+        if(is_null($chapter)) return "";
+
         return $this->getContent($chapter['starts_at'], $chapter['ends_at']);
     }
 
